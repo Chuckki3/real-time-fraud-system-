@@ -1,0 +1,27 @@
+import pandas as pd
+import os
+
+input_path = "/content/data/processed/scored_transactions.csv"
+alert_path = "/content/data/processed/fraud_alerts.csv"
+
+def generate_alerts():
+    print("Generating fraud alerts...\n")
+
+    if not os.path.exists(input_path):
+        print("❌ No scored data found.")
+        return
+
+    df = pd.read_csv(input_path)
+
+    alerts = df[df["risk_flag"] == 1]
+
+    if alerts.empty:
+        print("✅ No fraud alerts detected.")
+        return
+
+    alerts.to_csv(alert_path, index=False)
+
+    print(f"🚨 {len(alerts)} fraud alerts generated!")
+
+# Run it
+generate_alerts()
