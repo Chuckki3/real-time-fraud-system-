@@ -4,34 +4,27 @@ import time
 import os
 from datetime import datetime
 
-# ✅ Create folder if it doesn't exist
-os.makedirs("data/raw_stream", exist_ok=True)
+file_path = "/content/data/raw_stream/transactions_stream.csv"
 
-file_path = "data/raw_stream/transactions_stream.csv"
-
-# Sample users and transaction types
 users = [f"user_{i}" for i in range(1, 101)]
 transaction_types = ["PAYMENT", "TRANSFER", "CASH_OUT"]
 
-# Generate one transaction
 def generate_transaction():
     return {
         "timestamp": datetime.now(),
         "customer_id": random.choice(users),
         "amount": round(random.uniform(100, 500000), 2),
         "transaction_type": random.choice(transaction_types),
-        "is_fraud": random.choice([0, 0, 0, 1])  # imbalanced fraud simulation
+        "is_fraud": random.choice([0, 0, 0, 1])
     }
 
-# Stream transactions (LIMITED for testing)
-def stream_transactions(n=20, delay=1):
-    print(f"Starting stream for {n} transactions...\n")
-    
+def stream_transactions(n=20):
+    print("Streaming transactions...\n")
+
     for i in range(n):
         txn = generate_transaction()
         df = pd.DataFrame([txn])
 
-        # Write to CSV (append mode)
         df.to_csv(
             file_path,
             mode='a',
@@ -39,11 +32,14 @@ def stream_transactions(n=20, delay=1):
             index=False
         )
 
-        print(f"{i+1}: New Transaction → {txn}")
-        
-        time.sleep(delay)
+        print(f"{i+1}: {txn}")
 
-    print("\n✅ Streaming complete!")
+        time.sleep(0.5)
+
+    print("\n✅ Done streaming!")
+
+# Run it
+stream_transactions(20)
 
 # Run the stream
 stream_transactions(n=20, delay=1)
